@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-(=2aru4i%_z_pu*#+fj#8df)vi8#d3316#*si4&_7kouqq!&i7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
 
 LOGIN_URL = '/store-login/'
 LOGIN_REDIRECT_URL = '/report/'
