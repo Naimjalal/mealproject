@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-ALLOWED_HOSTS = ["mealproject-wfia.onrender.com",
+ALLOWED_HOSTS = ["mealproject-wf1a.onrender.com",
                  "127.0.0.1", "localhost"]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
