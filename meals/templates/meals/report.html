@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>تقرير الوجبات</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: system-ui, sans-serif; background:#f4f6fa; padding:20px; }
+    .box { background:#fff; max-width:800px; margin:0 auto; padding:20px; border-radius:14px; }
+    h2 { margin-top:0; }
+    table { width:100%; border-collapse: collapse; margin-top:15px; }
+    th, td { border:1px solid #e5e7eb; padding:8px 10px; text-align:center; }
+    th { background:#f3f4f6; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .btn { display:inline-block; background:#0d6efd; color:#fff; padding:8px 12px; border-radius:8px; text-decoration:none; }
+    .date-form input { padding:5px 8px; }
+    .tick { font-weight: 700; }
+    .cross { color:#9ca3af; }
+
+     /* Toolbar */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;   /* center under the title */
+    margin-bottom: 12px;
+  }
+
+  /* Base button */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 150px;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform .02s ease, box-shadow .15s ease, background .15s ease, color .15s ease;
+    box-shadow: 0 2px 6px rgba(2,6,23,.05);
+  }
+  .btn:active { transform: translateY(1px); }
+
+  /* Variants */
+  .btn-primary   { background:#0d6efd; color:#fff; }
+  .btn-primary:hover { background:#0b5ed7; }
+
+  .btn-outline   { background:#fff; color:#0d6efd; border-color:#0d6efd; }
+  .btn-outline:hover { background:#eff6ff; }
+
+  .btn-danger    { background:#ef4444; color:#fff; }
+  .btn-danger:hover { background:#dc2626; }
+
+  /* Date input match button height */
+  .toolbar input[type="date"] {
+    height: 40px;
+    padding: 0 10px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    font-weight:600;
+  }
+
+  /* Make small screens stack nicely */
+  @media (max-width: 520px){
+    .toolbar { justify-content: stretch; }
+    .btn, .toolbar input[type="date"] { flex:1 1 100%; min-width: auto; }
+  }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="topbar">
+  <h2>تقرير الوجبات ليوم {{ report_date }}</h2>
+
+  <div class="toolbar">
+  <form method="get" class="date-form" style="display:flex; gap:10px;">
+    <input type="date" name="date" value="{{ report_date|date:'Y-m-d' }}">
+    <button type="submit" class="btn btn-outline">عرض</button>
+  </form>
+  <a class="btn btn-danger" href="{% url 'logout' %}">تسجيل خروج</a>
+  <a class="btn btn-outline" href="{% url 'meal_report_excel' %}?date={{ report_date|date:'Y-m-d' }}">تنزيل Excel (إجمالي)</a>
+  <a class="btn btn-primary" href="{% url 'meal_report_excel_detailed' %}?date={{ report_date|date:'Y-m-d' }}">تنزيل Excel (تفصيلي)</a>
+  
+</div>
+
+
+</div>
+
+
+    <table>
+      <tr>
+        <th>الموقع</th>
+        <th>الفطور</th>
+        <th>الغداء</th>
+        <th>العشاء</th>
+        <th>الإجمالي</th>
+      </tr>
+      {% for row in data %}
+      <tr>
+        <td>{{ row.location_name }}</td>
+        <td>{{ row.breakfast }}</td>
+        <td>{{ row.lunch }}</td>
+        <td>{{ row.dinner }}</td>
+        <td>{{ row.total }}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <th>الإجمالي</th>
+        <th>{{ grand_totals.breakfast }}</th>
+        <th>{{ grand_totals.lunch }}</th>
+        <th>{{ grand_totals.dinner }}</th>
+        <th>{{ grand_totals.all }}</th>
+      </tr>
+    </table>
+  </div>
+  <h3 style="margin-top:22px;">قائمة الموظفين الذين طلبوا (صف واحد لكل موظف)</h3>
+<table>
+  <tr>
+    <th>#</th>
+    <th>رقم الموظف</th>
+    <th>الموقع</th>
+    <th>الفطور</th>
+    <th>الغداء</th>
+    <th>العشاء</th>
+    <th>آخر وقت</th>
+  </tr>
+  {% for r in detail_rows %}
+  <tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ r.employee_no }}</td>
+    <td>
+      {% if r.location == 'budaiya' %}البديع{% elif r.location == 'khamis' %}الخميس{% elif r.location == 'gharbiya' %}الغربية{% else %}{{ r.location }}{% endif %}
+    </td>
+    <td class="tick">{% if r.breakfast %}✅{% else %}❌{% endif %}</td>
+    <td class="tick">{% if r.lunch %}✅{% else %}❌{% endif %}</td>
+    <td class="tick">{% if r.dinner %}✅{% else %}❌{% endif %}</td>
+    <td>{{ r.last_time|date:"H:i" }}</td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="7">لا توجد طلبات في هذا اليوم</td></tr>
+  {% endfor %}
+</table>
+
+</body>
+</html>

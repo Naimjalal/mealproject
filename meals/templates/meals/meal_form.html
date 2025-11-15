@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>طلب الوجبة</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #f4f6fa;
+      --card: #ffffff;
+      --primary: #0d6efd;
+      --text: #1f2933;
+      --muted: #6b7280;
+      --radius: 16px;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      padding: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      max-width: 480px;
+      margin: 25px auto;
+      padding: 22px 20px 26px;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 35px rgba(15, 23, 42, 0.05);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+      color: var(--text);
+      text-align: right;
+    }
+
+    .date-line {
+      color: var(--muted);
+      margin-bottom: 14px;
+      font-size: 0.85rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* select (location) */
+   select {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #fff;
+  font-size: 0.9rem;
+  outline: none;
+  transition: 0.15s ease;
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #0d6efd 50%),
+    linear-gradient(135deg, #0d6efd 50%, transparent 50%);
+  background-position:
+    calc(100% - 22px) calc(50% - 3px),
+    calc(100% - 16px) calc(50% - 3px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 35px;
+}
+
+select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.12);
+}
+
+
+    /* nice checkboxes */
+    .meal-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+
+    .meal-option input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .meal-option.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    button {
+      width: 100%;
+      padding: 11px;
+      margin-top: 16px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s ease;
+    }
+
+    button:hover {
+      background: #0b5ed7;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #b91c1c;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 520px) {
+      .card {
+        margin: 0;
+        border-radius: 0;
+        min-height: 100vh;
+      }
+    }
+
+  .meal-option.disabled {
+    opacity: 0.4;
+  }
+
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>طلب الوجبة</h2>
+    <p class="date-line">التاريخ: {{ order_for }}</p>
+
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+
+      {% if not existing_location %}
+        <label for="location">موقع العمل</label>
+        <select name="location" id="location" required>
+          <option value="">اختر الموقع</option>
+          <option value="budaiya">البديع</option>
+          <option value="khamis">الخميس</option>
+          <option value="gharbiya">الغربية</option>
+        </select>
+      {% else %}
+        <p class="date-line">
+          الموقع:
+          {% if existing_location == "budaiya" %}البديع{% endif %}
+          {% if existing_location == "khamis" %}الخميس{% endif %}
+          {% if existing_location == "gharbiya" %}الغربية{% endif %}
+        </p>
+      {% endif %}
+    <div class="field">
+    <label for="id_duty_type">نوع الدوام</label>
+    <select name="duty_type" id="id_duty_type" required>
+      <option value="">— اختر نوع الدوام —</option>
+      <option value="24h" {% if existing_duty == "24h" %}selected{% endif %}>٢٤ ساعة</option>
+
+      <option value="dbl_5_7" {% if existing_duty == "dbl_5_7" %}selected{% endif %}>
+        دبل إضافي (٥–٧ ص)
+      </option>
+      <option value="dbl_8_13" {% if existing_duty == "dbl_8_13" %}selected{% endif %}>
+        دبل إضافي (٨ ص–١ م)
+      </option>
+      <option value="dbl_14_20" {% if existing_duty == "dbl_14_20" %}selected{% endif %}>
+        دبل إضافي (٢–٨ م)
+      </option>
+
+      <option value="8h_morn" {% if existing_duty == "8h_morn" %}selected{% endif %}>
+        دوام ٨ ساعات (صباحي)
+      </option>
+      <option value="8h_noon" {% if existing_duty == "8h_noon" %}selected{% endif %}>
+        دوام ٨ ساعات (مسائي)
+      </option>
+      <option value="8h_night" {% if existing_duty == "8h_night" %}selected{% endif %}>
+        دوام ٨ ساعات (ليلي)
+      </option>
+
+      <option value="12h_day" {% if existing_duty == "12h_day" %}selected{% endif %}>
+        دوام ١٢ ساعة (٥ ص–٥ م)
+      </option>
+      <option value="12h_night" {% if existing_duty == "12h_night" %}selected{% endif %}>
+        دوام ١٢ ساعة (٥ م–٥ ص)
+      </option>
+    </select>
+  </div>
+      <label style="margin-top:18px;">اختر الوجبة</label>
+
+      <div class="meal-option">
+  <label>
+    <input type="checkbox" id="meal_breakfast" name="meal_type" value="breakfast"
+           {% if "breakfast" in existing_types %}checked{% endif %}>
+    الفطور
+  </label>
+</div>
+
+<div class="meal-option">
+  <label>
+    <input type="checkbox" id="meal_lunch" name="meal_type" value="lunch"
+           {% if "lunch" in existing_types %}checked{% endif %}>
+    الغداء
+  </label>
+</div>
+
+<div class="meal-option">
+  <label>
+    <input type="checkbox" id="meal_dinner" name="meal_type" value="dinner"
+           {% if "dinner" in existing_types %}checked{% endif %}>
+    العشاء
+  </label>
+</div>
+
+
+      {% if error %}
+    <p style="color:#b91c1c; margin-top:10px;">{{ error }}</p>
+  {% endif %}
+
+  <button type="submit">تأكيد الطلب</button>
+    </form>
+  </div>
+
+<script>
+  (function() {
+    const dutySelect = document.getElementById('id_duty_type');
+    const mealBoxes = {
+      breakfast: document.getElementById('meal_breakfast'),
+      lunch: document.getElementById('meal_lunch'),
+      dinner: document.getElementById('meal_dinner'),
+    };
+
+    const rules = {
+      "24h": ["breakfast", "lunch", "dinner"],
+
+      "dbl_5_7": ["breakfast", "lunch", "dinner"],
+      "dbl_8_13": ["lunch", "dinner"],
+      "dbl_14_20": ["dinner"],
+
+      "8h_morn": ["breakfast"],
+      "8h_noon": ["lunch"],
+      "8h_night": ["dinner"],
+
+      "12h_day": ["breakfast", "lunch"],
+      "12h_night": ["dinner"],
+    };
+
+    function updateMealsForDuty() {
+      const duty = dutySelect.value;
+      const allowed = rules[duty] || [];
+
+      Object.keys(mealBoxes).forEach(function(mealKey) {
+        const box = mealBoxes[mealKey];
+        if (!box) return;
+
+        const wrapper = box.closest('.meal-option');
+        if (allowed.includes(mealKey)) {
+          box.disabled = false;
+          if (wrapper) wrapper.classList.remove('disabled');
+        } else {
+          box.disabled = true;
+          box.checked = false;
+          if (wrapper) wrapper.classList.add('disabled');
+        }
+      });
+    }
+
+    if (dutySelect) {
+      dutySelect.addEventListener('change', updateMealsForDuty);
+      // Run once on page load (in case duty already selected)
+      updateMealsForDuty();
+    }
+  })();
+</script>
+
+
+</body>
+</html>

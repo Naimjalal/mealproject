@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>تسجيل دخول المخزن</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #f4f6fa;
+      --card: #ffffff;
+      --primary: #0d6efd;
+    }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: var(--card);
+      width: 100%;
+      max-width: 380px;
+      padding: 22px 20px 26px;
+      border-radius: 14px;
+      box-shadow: 0 10px 35px rgba(15, 23, 42, 0.05);
+      text-align: right;
+    }
+    h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 500;
+    }
+    input {
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      margin-top: 6px;
+    }
+    button {
+      width: 100%;
+      margin-top: 16px;
+      padding: 10px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .errorlist {
+      color: #b91c1c;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      list-style: none;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>تسجيل دخول المسؤول</h2>
+    <p style="color:#6b7280;font-size:0.85rem;">هذه الصفحة للمسؤول فقط.</p>
+    <form method="post">
+      {% csrf_token %}
+      <label for="id_username">اسم المستخدم</label>
+      <input type="text" name="username" autofocus required id="id_username">
+
+      <label for="id_password">كلمة المرور</label>
+      <input type="password" name="password" required id="id_password">
+
+      {% if form.errors %}
+        <ul class="errorlist">
+          <li>اسم المستخدم أو كلمة المرور غير صحيحة</li>
+        </ul>
+      {% endif %}
+
+      <button type="submit">دخول</button>
+    </form>
+  </div>
+</body>
+</html>

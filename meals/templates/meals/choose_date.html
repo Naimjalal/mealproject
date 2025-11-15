@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>اختيار اليوم</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: sans-serif; background:#f4f6fa; padding:20px; text-align:center; }
+    .card { background:#fff; max-width:420px; margin:20px auto; padding:20px; border-radius:16px; }
+    .day-link {
+      display:block;
+      background:#0d6efd;
+      color:#fff;
+      text-decoration:none;
+      padding:10px;
+      border-radius:8px;
+      margin-top:10px;
+    }
+    .dead-text { font-size:0.75rem; color:#555; margin-bottom:6px; }
+    .closed { background:#9ca3af; pointer-events:none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>اختر اليوم</h2>
+    <p style="
+  color:#6b7280;
+  font-size:0.85rem;
+  margin-top:-4px;
+  margin-bottom:18px;
+">
+  🕗 الطلبات تُغلق في الساعة <strong>8:00 م مساءً</strong> قبل يوم الوجبة.
+</p>
+    {% for d in days %}
+      <a href="{% if not d.is_closed %}{% url 'meal_form' employee.id d.date %}{% endif %}"
+         class="day-link {% if d.is_closed %}closed{% endif %}">
+        {{ d.date }} - {{ d.day_name }}
+      </a>
+      <div class="dead-text">
+        {% if d.is_closed %}
+          مغلق (انتهى وقت الطلب)
+        {% else %}
+          {{ d.deadline_text }}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</body>
+</html>
