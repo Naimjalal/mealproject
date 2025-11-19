@@ -4,9 +4,11 @@
   <meta charset="utf-8">
   <title>اختيار اليوم</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
     body { font-family: sans-serif; background:#f4f6fa; padding:20px; text-align:center; }
-    .card { background:#fff; max-width:420px; margin:20px auto; padding:20px; border-radius:16px; }
+    .card { background:#fff; max-width:420px; margin:20px auto; padding:20px; border-radius:16px; font-weight:bold;}
+
     .day-link {
       display:block;
       background:#0d6efd;
@@ -15,27 +17,55 @@
       padding:10px;
       border-radius:8px;
       margin-top:10px;
+      font-size:1rem;
+      font-weight:600;
     }
+
     .dead-text { font-size:0.75rem; color:#555; margin-bottom:6px; }
+
     .closed { background:#9ca3af; pointer-events:none; }
+
+    /* Menu box style */
+    .menu-box {
+      background:#f1f5f9;
+      padding:10px;
+      border-radius:8px;
+      margin-top:6px;
+      font-size:0.85rem;
+      text-align:right;
+      line-height:1.5;
+      color:#374151;
+    }
+
+    .menu-title {
+      font-weight:bold;
+      color:#0d6efd;
+      margin-bottom:4px;
+    }
   </style>
 </head>
+
 <body>
   <div class="card">
     <h2>اختر اليوم</h2>
+
     <p style="
-  color:#6b7280;
-  font-size:0.85rem;
-  margin-top:-4px;
-  margin-bottom:18px;
-">
-  🕗 الطلبات تُغلق في الساعة <strong>8:00 م مساءً</strong> قبل يوم الوجبة.
-</p>
+      color:#6b7280;
+      font-size:0.85rem;
+      margin-top:-4px;
+      margin-bottom:18px;">
+      🕗 الطلبات تُغلق في الساعة <strong>8:00 م مساءً</strong> قبل يوم الوجبة.
+    </p>
+
     {% for d in days %}
+      
+      <!-- Day button -->
       <a href="{% if not d.is_closed %}{% url 'meal_form' employee.id d.date %}{% endif %}"
          class="day-link {% if d.is_closed %}closed{% endif %}">
         {{ d.date }} - {{ d.day_name }}
       </a>
+
+      <!-- Deadline -->
       <div class="dead-text">
         {% if d.is_closed %}
           مغلق (انتهى وقت الطلب)
@@ -43,7 +73,23 @@
           {{ d.deadline_text }}
         {% endif %}
       </div>
+
+      <!-- MENU BOX -->
+      {% if d.menu %}
+      <div class="menu-box">
+        <div class="menu-title">قائمة اليوم:</div>
+        <div> فطور: {{ d.menu.breakfast_text }}</div>
+        <div> غداء: {{ d.menu.lunch_text }}</div>
+        <div> عشاء: {{ d.menu.dinner_text }}</div>
+      </div>
+      {% else %}
+      <div class="menu-box">
+        لا توجد قائمة طعام لهذا اليوم.
+      </div>
+      {% endif %}
+
     {% endfor %}
+
   </div>
 </body>
 </html>

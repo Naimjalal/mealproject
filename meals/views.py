@@ -8,7 +8,7 @@ try:
 except ImportError:
     openpyxl = None
 from django.utils import timezone
-from .models import Employee, MealOrder
+from .models import Employee, MealOrder,DailyMenu
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 import openpyxl
@@ -292,10 +292,15 @@ def choose_date(request, employee_id):
             offset += 1
             continue
 
-        day_en = meal_day.strftime("%A")
-        day_ar = DAY_NAMES_AR.get(day_en, day_en)
+        weekday_en = meal_day.strftime("%A")  # e.g. "Monday"
+        weekday_ar = DAY_NAMES_AR.get(weekday_en, weekday_en)
 
-        # text about deadline
+        # Get menu for this weekday
+        try:
+            menu = DailyMenu.objects.get(weekday=weekday_en)
+        except DailyMenu.DoesNotExist:
+            menu = None
+
         if offset == 1:
             deadline_text = "متاح حتى 8:00 م اليوم"
         elif offset == 2:
@@ -305,8 +310,9 @@ def choose_date(request, employee_id):
 
         days.append({
             "date": meal_day,
-            "day_name": day_ar,
+            "day_name": weekday_ar,
             "deadline_text": deadline_text,
+            "menu": menu,  # attach menu object here!
         })
 
         offset += 1

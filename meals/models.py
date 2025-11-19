@@ -1,5 +1,15 @@
 from django.db import models
 
+WEEKDAY_CHOICES = [
+    ("Saturday", "السبت"),
+    ("Sunday", "الأحد"),
+    ("Monday", "الاثنين"),
+    ("Tuesday", "الثلاثاء"),
+    ("Wednesday", "الأربعاء"),
+    ("Thursday", "الخميس"),
+    ("Friday", "الجمعة"),
+]
+
 # نوع الدوام لكل طلب وجبة
 DUTY_TYPE_CHOICES = [
     ("24h", "٢٤ ساعة"),
@@ -60,3 +70,17 @@ class MealOrder(models.Model):
     def __str__(self):
         return f"{self.employee.unique_number} - {self.order_date} - {self.meal_type} - {self.location}"
 
+class DailyMenu(models.Model):
+    weekday = models.CharField(
+        "اليوم",
+        max_length=10,
+        choices=WEEKDAY_CHOICES,
+        unique=True,  # one menu per weekday
+    )
+    breakfast_text = models.CharField("فطور", max_length=200, blank=True)
+    lunch_text = models.CharField("غداء", max_length=200, blank=True)
+    dinner_text = models.CharField("عشاء", max_length=200, blank=True)
+
+    def __str__(self):
+        # shows: قائمة يوم الاثنين
+        return f"قائمة يوم {self.get_weekday_display()}"
