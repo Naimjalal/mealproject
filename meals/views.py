@@ -16,16 +16,15 @@ import openpyxl
 ALLOWED_BY_DUTY = {
     "24h": {"breakfast", "lunch", "dinner"},
 
-    "dbl_5_7": {"breakfast", "lunch", "dinner"},
-    "dbl_8_13": {"lunch", "dinner"},
-    "dbl_14_20": {"dinner"},
+    "18h": {"breakfast", "lunch", "dinner"},
+    "12h_day": {"breakfast", "lunch"},
+    "12h_night": {"dinner"},
 
-    "8h_morn": {"breakfast"},
+    "8h_morning": {"breakfast"},
     "8h_noon": {"lunch"},
     "8h_night": {"dinner"},
 
-    "12h_day": {"breakfast", "lunch"},
-    "12h_night": {"dinner"},
+    
 }
 
 

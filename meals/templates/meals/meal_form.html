@@ -159,16 +159,16 @@ select:focus {
         <label for="location">موقع العمل</label>
         <select name="location" id="location" required>
           <option value="">اختر الموقع</option>
-          <option value="budaiya">البديع</option>
-          <option value="khamis">الخميس</option>
-          <option value="gharbiya">الغربية</option>
+          <option value="budaiya">ب</option>
+          <option value="khamis">خ</option>
+          <option value="gharbiya">غ</option>
         </select>
       {% else %}
         <p class="date-line">
           الموقع:
-          {% if existing_location == "budaiya" %}البديع{% endif %}
-          {% if existing_location == "khamis" %}الخميس{% endif %}
-          {% if existing_location == "gharbiya" %}الغربية{% endif %}
+          {% if existing_location == "budaiya" %}ب{% endif %}
+          {% if existing_location == "khamis" %}خ{% endif %}
+          {% if existing_location == "gharbiya" %}غ{% endif %}
         </p>
       {% endif %}
     <div class="field">
@@ -177,32 +177,27 @@ select:focus {
       <option value="">— اختر نوع الدوام —</option>
       <option value="24h" {% if existing_duty == "24h" %}selected{% endif %}>٢٤ ساعة</option>
 
-      <option value="dbl_5_7" {% if existing_duty == "dbl_5_7" %}selected{% endif %}>
-        دبل إضافي (٥–٧ ص)
+      <option value="18h" {% if existing_duty == "18h" %}selected{% endif %}>
+        واجب ١٨ ساعة (التأخير عن الواجب الاساسي)
       </option>
-      <option value="dbl_8_13" {% if existing_duty == "dbl_8_13" %}selected{% endif %}>
-        دبل إضافي (٨ ص–١ م)
-      </option>
-      <option value="dbl_14_20" {% if existing_duty == "dbl_14_20" %}selected{% endif %}>
-        دبل إضافي (٢–٨ م)
-      </option>
-
-      <option value="8h_morn" {% if existing_duty == "8h_morn" %}selected{% endif %}>
-        دوام ٨ ساعات (صباحي)
-      </option>
-      <option value="8h_noon" {% if existing_duty == "8h_noon" %}selected{% endif %}>
-        دوام ٨ ساعات (مسائي)
-      </option>
-      <option value="8h_night" {% if existing_duty == "8h_night" %}selected{% endif %}>
-        دوام ٨ ساعات (ليلي)
-      </option>
-
+      
       <option value="12h_day" {% if existing_duty == "12h_day" %}selected{% endif %}>
-        دوام ١٢ ساعة (٥ ص–٥ م)
+        واجب ١٢ ساعة (من 0500 الى 1700)
       </option>
       <option value="12h_night" {% if existing_duty == "12h_night" %}selected{% endif %}>
-        دوام ١٢ ساعة (٥ م–٥ ص)
+        واجب ١٢ ساعة (من 1700 الى 0500)
       </option>
+
+      <option value="8h_morning" {% if existing_duty == "8h_morning" %}selected{% endif %}>
+        واجب ٨ ساعات (نهار)
+      </option>
+      <option value="8h_noon" {% if existing_duty == "8h_noon" %}selected{% endif %}>
+        واجب ٨ ساعات (اول ليل)
+      </option>
+      <option value="8h_night" {% if existing_duty == "8h_night" %}selected{% endif %}>
+        واجب ٨ ساعات (آخرليل)
+      </option>
+
     </select>
   </div>
       <label style="margin-top:18px;">اختر الوجبة</label>
@@ -251,17 +246,13 @@ select:focus {
 
     const rules = {
       "24h": ["breakfast", "lunch", "dinner"],
-
-      "dbl_5_7": ["breakfast", "lunch", "dinner"],
-      "dbl_8_13": ["lunch", "dinner"],
-      "dbl_14_20": ["dinner"],
-
-      "8h_morn": ["breakfast"],
+      "18h": ["breakfast", "lunch", "dinner"],
+      "12h_day": ["breakfast", "lunch"],
+      "12h_night": ["dinner"],
+      "8h_morning": ["breakfast"],
       "8h_noon": ["lunch"],
       "8h_night": ["dinner"],
 
-      "12h_day": ["breakfast", "lunch"],
-      "12h_night": ["dinner"],
     };
 
     function updateMealsForDuty() {
