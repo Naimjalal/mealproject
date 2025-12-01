@@ -90,11 +90,13 @@ DATABASES = {
     }
 }
 
-# If DATABASE_URL exists (Render), use Postgres instead of SQLite
-DATABASE_URL = os.getenv('DATABASE_URL')
-if DATABASE_URL:
+# On Render, use DATABASE_URL (Postgres) instead of sqlite
+
+
+database_url = os.environ.get("DATABASE_URL")
+if database_url:
     DATABASES['default'] = dj_database_url.parse(
-        DATABASE_URL,
+        database_url,
         conn_max_age=600,
         ssl_require=True,
     )
