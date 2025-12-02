@@ -38,9 +38,9 @@ def meal_report(request):
         report_date = date.today() + timedelta(days=1)
 
     locations = [
-        ("budaiya", "البديع"),
-        ("khamis", "الخميس"),
-        ("gharbiya", "الغربية"),
+        ("budaiya", "ب"),
+        ("khamis", "خ"),
+        ("gharbiya", "غ"),
     ]
     meal_types = [
         ("breakfast", "الفطور"),

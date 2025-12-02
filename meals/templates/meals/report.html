@@ -117,7 +117,7 @@
       </tr>
     </table>
   </div>
-  <h3 style="margin-top:22px;">قائمة الموظفين الذين طلبوا (صف واحد لكل موظف)</h3>
+  <h3 style="margin-top:22px;">قائمة الموظفين المستحقين</h3>
 <table>
   <tr>
     <th>#</th>
@@ -133,7 +133,7 @@
     <td>{{ forloop.counter }}</td>
     <td>{{ r.employee_no }}</td>
     <td>
-      {% if r.location == 'budaiya' %}البديع{% elif r.location == 'khamis' %}الخميس{% elif r.location == 'gharbiya' %}الغربية{% else %}{{ r.location }}{% endif %}
+      {% if r.location == 'budaiya' %}ب{% elif r.location == 'khamis' %}خ{% elif r.location == 'gharbiya' %}غ{% else %}{{ r.location }}{% endif %}
     </td>
     <td class="tick">{% if r.breakfast %}✅{% else %}❌{% endif %}</td>
     <td class="tick">{% if r.lunch %}✅{% else %}❌{% endif %}</td>
